@@ -9,7 +9,7 @@ def read_obsidian_notes(notes_dir: str)-> list[tuple[str,str]]:
     notes_dir = Path(notes_dir)
 
     if not notes_dir.exists():
-        raise FileNotFoundError(f"Directory: |"{notes_dir}"| Not found")
+        raise FileNotFoundError(f"Directory: {notes_dir} Not found")
     
     markdown_files = list(notes_dir.glob("**/*.md")) #**/* gets all md files including subfolders
 
@@ -25,7 +25,11 @@ def read_obsidian_notes(notes_dir: str)-> list[tuple[str,str]]:
 
     return notes
     
-    
+notes = read_obsidian_notes("notes")
+for name, content in notes:
+    print(f"Name: {name}\n\nFirst 50 char of note:\n{content:50}...\n")
+
+
     
     
 
