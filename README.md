@@ -14,24 +14,24 @@ Easy to run: Use a command-line tool to pick your notes and deck name.
 How to Use
 Install:
 
-`bash
+```bash
 Copy
 git clone https://github.com/SAMSABB/Obsidian2Anki  
 pip install -r requirements.txt  
-`
+```
 Add questions in Obsidian like this:
 
-`markdown
+```markdown
 Copy
 Q: What is Python?  
 A: A programming language.
-`
+```
 Run the tool:
-`
+```
 bash
 Copy
 python converter.py --notes "my_notes_folder" --deck "Study Deck"  
-`
+```
 Open the .apkg file in Anki and start studying!
 
 Why It’s Cool
