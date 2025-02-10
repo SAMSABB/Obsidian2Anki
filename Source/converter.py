@@ -25,11 +25,6 @@ def read_obsidian_notes(notes_dir: str)-> list[tuple[str,str]]:
 
     return notes
     
-notes = read_obsidian_notes("notes")
-
-for name, content in notes:
-    print(f"Name: {name}\n\nFirst 50 char of note:\n{content:50}...\n")
-
 
 def parseQA(content : str)-> list[tuple[str,str]]: 
     
@@ -38,49 +33,65 @@ def parseQA(content : str)-> list[tuple[str,str]]:
     qaPairs = []
     currentq = None
     currenta = None
+    inAnswer = False
 
     for line in lines:
         line = line.strip()
         
         if line.startswith("Q:"):
             #Save prev q/a if exists
-            if currentq and currenta:
-                qaPairs.append((currentq,currenta))
-                currenta = None
+            if currentq:
+                if currenta:
+                    qaPairs.append((currentq,"\n".join(currenta)))
+                else:
+                    print(f"Warning! Question {currentq} has NO ANSWER")
+                
             currentq = line[2:].strip()
+            currenta = []
+            inAnswer = False
         
         elif line.startswith("A:") and currentq:
-            currenta = line[2:].strip()
-            qaPairs.append((currentq,currenta))
-            currentq = None
+            inAnswer = True
+            currenta.append(line[2:].strip())
+            
         
-        elif currentq and currenta is None:
+        elif inAnswer and line.startswith("-"):
             #handle for multiline answer
-            currenta = line.strip()
+            currenta.append(line.strip())
         
-        elif currenta and currentq:
-            #append to multiline answer
-            currenta += "\n" + line.strip()
-    
+        elif currentq and not inAnswer and line.startswith("-"):
+            #append lines part of the answer without prefix
+            currenta.append(line.strip())
+        
     if currentq and currenta:
-        qaPairs.append((currentq,currenta))
+        qaPairs.append((currentq,"\n".join(currenta)))
     
     return qaPairs
 
-content = """
-Q: What is Python?
-A: A programming language.
 
-Q: What is Anki?
-A: A flashcard app.
-"""
 
-pairs = parseQA(content)   
-print(pairs)
+   
 
 
 
+
+notes = read_obsidian_notes("notes")
+
+
+
+
+for name, content in notes:
     
+    pairs = parseQA(content)
+    print(pairs) 
+    
+    
+   
+
+
+
+
+
 
 
 '''
