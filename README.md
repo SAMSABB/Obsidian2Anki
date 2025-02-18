@@ -48,7 +48,7 @@ This project shows I can:
 
 - Build tools that solve real problems (automation!).
 
-- Work with APIs and libraries (genanki, watchdog).
+- Work with APIs and libraries (ankiconnect, watchdog).
 
 - Write clean, documented code.
 
