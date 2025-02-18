@@ -1,4 +1,4 @@
-# Obsidian2Anki
+# Obsidian2Anki ⚠️⚠️WIP⚠️⚠️
 ### A python tool that automatically Convert MD files to Anki flashcards
 ### Perfect for use with Obsidian Note taking
  
