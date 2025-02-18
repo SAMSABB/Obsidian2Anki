@@ -1,3 +1,4 @@
+import requests
 from pathlib import Path
 
 def read_obsidian_notes(notes_dir: str)-> list[tuple[str,str]]:
@@ -69,39 +70,47 @@ def parseQA(content : str)-> list[tuple[str,str]]:
     return qaPairs
 
 
-
-   
-
-
-
-
 notes = read_obsidian_notes("notes")
-
-
-
-
 for name, content in notes:
-    
     pairs = parseQA(content)
     print(pairs) 
     
-    
-   
+
+
+def check_anki_connected():
+    try:
+        response = requests.post("http://localhost:8765", json={"action":"version","version": 6})
+        print("Connected to Anki")
+    except:
+        print("Error????????? Is Anki running? Try Again after opening Anki.")
+        exit()
+
+def create_deck(deck_name):
+    requests.post("http://localhost:8765",json={"action":"createDeck",
+                    "version":6, "params":{"deck": deck_name}})
+
+def add_card(question,answer, deck_name):
+    requests.post("http://localhost:8765": json={"action":"addNote","version":6,
+    "params":{
+        "note":{
+            "deckName": deck_name,
+            "modelName": "Basic",
+            "fields":{"Front":question,"Back": answer}
+            }
+        }
+    })
 
 
 
 
 
+check_anki_connected()
+create_deck("Obsidian Flashcards")
 
+for question,answer in pairs:
+    add_card(question,answer, "Obsidian Flashcards")
 
-'''
-
-
-
-
-
-
-
+print("cards added to anki!")
 
 
 
