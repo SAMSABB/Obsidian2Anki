@@ -119,6 +119,31 @@ def add_card(question,answer, deck_name):
         }
     })
 
+
+
+def process_vaults(vaults_dir:str):
+    
+    #Read vaults and their info
+    vaults_info = read_vaults(vaults_dir)
+
+    #Processing vaults to create decks
+    for vault_name, vault_path in vaults_info:
+        notes = read_obsidian_notes(vault_path)
+        all_pairs = []
+        for name, content in notes:
+            all_pairs.extend(parseQA(content)) 
+    
+        deck_name = f"Obsidian Flashcards - {vault_name}"
+        create_deck(deck_name)
+
+
+        for question,answer in all_pairs:
+            add_card(question,answer, deck_name)
+    
+
+
+check_anki_connected()
+
 """
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 INPUT PATH TO FOLDER CONTAINING VAULTS HERE
@@ -132,32 +157,9 @@ vaults_dir = "notes"
 INPUT PATH TO FOLDER CONTAINING VAULTS HERE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 """
-vaults_info = read_vaults(vaults_dir)
-
-check_anki_connected()
-
-#Processing vaults to create decks
-for vault_name, vault_path in vaults_info:
-    notes = read_obsidian_notes(vault_path)
-    all_pairs = []
-    for name, content in notes:
-        all_pairs.extend(parseQA(content)) 
-    
-    deck_name = f"Obsidian Flashcards - {vault_name}"
-    create_deck(deck_name)
 
 
-    for question,answer in all_pairs:
-        add_card(question,answer, deck_name)
-    
-
-
-
-
-
-
-
-print(all_pairs)
+process_vaults(vaults_dir)
 
 
 print("cards added to anki!")
