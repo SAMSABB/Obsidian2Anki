@@ -70,11 +70,6 @@ def parseQA(content : str)-> list[tuple[str,str]]:
     return qaPairs
 
 
-notes = read_obsidian_notes("notes")
-for name, content in notes:
-    pairs = parseQA(content)
-    print(pairs) 
-    
 
 
 def check_anki_connected():
@@ -90,7 +85,7 @@ def create_deck(deck_name):
                     "version":6, "params":{"deck": deck_name}})
 
 def add_card(question,answer, deck_name):
-    requests.post("http://localhost:8765": json={"action":"addNote","version":6,
+    requests.post("http://localhost:8765", json={"action":"addNote","version":6,
     "params":{
         "note":{
             "deckName": deck_name,
@@ -101,13 +96,19 @@ def add_card(question,answer, deck_name):
     })
 
 
+notes = read_obsidian_notes("notes")
+all_pairs = []
+for name, content in notes:
+    pairs = parseQA(content)
+    all_pairs.extend(pairs) 
+    
 
 
 
 check_anki_connected()
 create_deck("Obsidian Flashcards")
-
-for question,answer in pairs:
+print(all_pairs)
+for question,answer in all_pairs:
     add_card(question,answer, "Obsidian Flashcards")
 
 print("cards added to anki!")
@@ -121,3 +122,4 @@ print("cards added to anki!")
 
 
 
+'''

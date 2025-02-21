@@ -1,5 +1,5 @@
 # Warra note 
-Q: This question should throw an error
+This question should throw an error
 
 Q: Definition of Sigma
 A: This note
