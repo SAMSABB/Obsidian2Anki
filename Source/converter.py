@@ -1,18 +1,42 @@
 import requests
 from pathlib import Path
+import os
 
-def read_obsidian_notes(notes_dir: str)-> list[tuple[str,str]]:
+
+
+def read_vaults(vaults_dir:str)-> list[tuple[str,str]]:
+    """
+    Reads all subdirectories in a directory and returns list
+    containing(vault_name,vault_path) 
+    """
+    vaults_dir = Path(vaults_dir)
+    
+    if not vaults_dir.exists():
+        raise FileNotFoundError(f"Directory: {vaults_dir} Not found. :(")
+    
+    vaults = [vault for vault in vaults_dir.iterdir()if vault.is_dir()] # Loops through directory returning all vaults
+
+    vaults_info= []
+
+    for vault_path in vaults: # Loops thorugh vaults returning their name and path
+        vault_name = vault_path.name
+        vaults_info.append((vault_name,vault_path))
+    
+    return vaults_info
+
+def read_obsidian_notes(vault_path: str)-> list[tuple[str,str]]:
 
     """
     Reads all .md files in a directory and returns list of (filename, content)
     """
 
-    notes_dir = Path(notes_dir)
+    vault_path = Path(vault_path)
 
-    if not notes_dir.exists():
-        raise FileNotFoundError(f"Directory: {notes_dir} Not found")
+
+    if not vault_path.exists():
+        raise FileNotFoundError(f"Vault: {vault_path} Not found")
     
-    markdown_files = list(notes_dir.glob("**/*.md")) #**/* gets all md files including subfolders
+    markdown_files = list(vault_path.glob("**/*.md")) #**/* gets all md files including subfolders
 
     notes = []
 
@@ -95,21 +119,46 @@ def add_card(question,answer, deck_name):
         }
     })
 
+"""
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+INPUT PATH TO FOLDER CONTAINING VAULTS HERE
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+"""
 
-notes = read_obsidian_notes("notes")
-all_pairs = []
-for name, content in notes:
-    pairs = parseQA(content)
-    all_pairs.extend(pairs) 
+vaults_dir = "notes"
+
+"""
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+INPUT PATH TO FOLDER CONTAINING VAULTS HERE
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+"""
+vaults_info = read_vaults(vaults_dir)
+
+check_anki_connected()
+
+#Processing vaults to create decks
+for vault_name, vault_path in vaults_info:
+    notes = read_obsidian_notes(vault_path)
+    all_pairs = []
+    for name, content in notes:
+        all_pairs.extend(parseQA(content)) 
+    
+    deck_name = f"Obsidian Flashcards - {vault_name}"
+    create_deck(deck_name)
+
+
+    for question,answer in all_pairs:
+        add_card(question,answer, deck_name)
     
 
 
 
-check_anki_connected()
-create_deck("Obsidian Flashcards")
+
+
+
+
 print(all_pairs)
-for question,answer in all_pairs:
-    add_card(question,answer, "Obsidian Flashcards")
+
 
 print("cards added to anki!")
 
