@@ -39,8 +39,6 @@ python converter.py --notes "my_notes_folder" --deck "Study Deck"
 
 - Saves time: No more copying notes into Anki by hand.
 
-- Written in Python: Uses libraries like genanki for Anki integration.
-
  - Easy to customize: Change how questions are formatted or add tags.
 
 ### For Employers
